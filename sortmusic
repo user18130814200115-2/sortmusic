@@ -1,0 +1,20 @@
+#!/bin/sh
+
+index=1
+total=$(ls *mp3 | wc -l)
+
+for file in *.mp3; do
+
+	metadata=$(id3 "$file")
+
+	artist=$(echo "$metadata" | grep "Artist: " | tr "/" "_")
+	album=$(echo "$metadata" | grep "Album: " | tr "/" "_")
+	title=$(echo "$metadata" | grep "Title: " | tr "/" "_")
+
+
+	mkdir -p "${artist:8}/${album:7}"
+	mv "$file" "${artist:8}/${album:7}/${title:7}.mp3"
+	echo -ne "$index/$total"\\r
+	index=$(expr "$index" + 1)
+
+done
